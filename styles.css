@@ -1,0 +1,99 @@
+body{font-family: sans-serif;}
+
+#form {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.589);
+  transition: display 1s;
+}
+
+.form-container {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  background-color: white;
+  margin: 50px auto;
+  border-radius: 5px;
+  text-align: center;
+}
+#form-header {
+  width: 100%;
+  padding-top: 50px;
+}
+
+#newBookForm input:not(:last-child) {
+  width: 300px;
+}
+#newBookForm label:not(:last-child) {
+  display: block;
+  text-align: left;
+  padding-left: 45px;
+  padding-top: 20px;
+}
+#newBookForm button {
+  display: block;
+  margin: 20px auto;
+}
+#closeform {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+#readsection {
+  position: relative;
+  top: 10px;
+  left: 0;
+}
+#readlabel {
+
+}
+#read {
+  margin-top: 10px;
+}
+
+#books {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.book {
+  width: 300px;
+  min-height: 300px;
+  background-color: rgb(137, 160, 107);
+  font-size: 25px;
+  border-radius: 30px;
+  text-align: center;
+}
+.book p {
+  text-decoration: underline dashed;
+  padding-top: 10px;
+}
+.book button {
+  margin-bottom: 20px;
+}
+
+#openform-div {
+  width: 100px;
+  margin: 20px auto;
+  text-align: center;
+}
+#openform {
+  background-color: rgb(114, 201, 114);
+  border: none;
+  height: 40px;
+  width: 75px;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+}
+#openform:hover{
+  background-color: rgb(91, 127, 226);
+}
