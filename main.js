@@ -5,51 +5,33 @@ const openFormBtn = document.getElementById("openform"),
       booksDiv = document.getElementById("books")
 
 
-//
-let bookLibrary = []
-
-function Book(title, author, pages, read) {
+function Book(title, author, pages) {
   this.title = title
   this.author = author
   this.pages = pages
-  this.read = read
 }
 
-Book.prototype.info = function() {
-  var readStr
-    if (this.read == true) {
-      readStr = "you've read this"
-    }
-    else {
-      readStr = "you have not read this yet"
-    }
-    console.log(
-      this.title + " by " + this.author + ", " + this.pages + " pages, " + readStr
-    )
-}
-
-const toggleRead = function(book) {
-  if (book.read) {
-    book.read = false
-    console.log('read now false')
-  }
-  else {
-    book.read = true
-    console.log('read now true')
-  }
-  console.log(book)
-  renderBooks()
-}
-
-const renderBooks = function() {
+async function renderBooks() {
   booksDiv.innerHTML = ''
 
-  for (let i = 0; i < bookLibrary.length; i++) {
+  let bookLibrary = await getBooks()
+
+  // If readStatuses not stored intialize the cookie with all false statuses
+  if (!localStorage.getItem("readStatuses")) {
+    let statuses = {}
+    bookLibrary.forEach(book => {
+      statuses[book.id] = false
+    })
+
+    localStorage.setItem("readStatuses", JSON.stringify(statuses))
+  }
+
+  bookLibrary.forEach(book => {
     const newBookDiv = document.createElement('div')
 
     newBookDiv.setAttribute("class","book")
-    
-    const book = bookLibrary[i];
+
+    // getting read status from localStorage
     const currentBook = booksDiv.appendChild(newBookDiv)
 
     const titleP = currentBook.appendChild(document.createElement('p'))
@@ -62,7 +44,7 @@ const renderBooks = function() {
     pagesP.innerHTML = book.pages
 
     const readP = currentBook.appendChild(document.createElement('p'))
-    if (book.read) {
+    if (getReadStatus(book.id)) {
       readP.innerHTML = "You have read this book"
     }
     else {
@@ -71,40 +53,30 @@ const renderBooks = function() {
 
     const readButton = currentBook.appendChild(document.createElement('button'))
     readButton.innerHTML = "Toggle Read Status"
-    readButton.addEventListener('click', function() {toggleRead(book)})
-  }
+    readButton.addEventListener('click', function() {
+      updateReadStatus(book.id, (!getReadStatus(book.id)))
+    })
+  }) 
+    
+  
 }
 
 
-const theHobbit = new Book("The Hobbit", "J.R.R Tolkien", 295, true)
-
-bookLibrary.push(theHobbit)
-
-
-
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault()
-  let readVar
-  if (event.target.elements.read.checked) {
-    readVar = true
-  }
-  else {
-    readVar = false
-  }
+  
   let formElements = event.target.elements
   newBook = new Book(
     formElements.title.value,
     formElements.author.value,
     formElements.pages.value,
-    readVar
   )
 
-  bookLibrary.push(newBook)
+  pushBook(newBook)
 
   document.getElementById("form").style.display = "none"
 
   renderBooks()
-
 })
 
 openFormBtn.onclick = function() {
@@ -120,4 +92,58 @@ window.addEventListener('click', (event) => {
   }
 })
 
-renderBooks()
+
+
+
+// New stuff for Firebase
+
+const db = firebase.firestore();
+
+
+function pushBook(book) {
+  db.collection("books").add({
+    title: book.title,
+    author: book.author,
+    pages: book.pages,
+  })
+  .then(docRef => {
+    console.log("Document written with ID: ", docRef.id)
+  })
+  .catch(error => {
+    console.error("Error adding document: ", error)
+  })
+}
+
+async function getBooks() {
+  let bookLibrary = []
+  await db.collection("books").get()
+  .then(query => {
+    query.forEach(doc => {
+      let book = doc.data()
+      book.id = doc.id
+      bookLibrary.push(book)
+    })
+  })
+  return bookLibrary
+}
+
+// Storing read status in localStorage, based on ID from db
+function updateReadStatus(bookID, bool) {
+  let statuses = JSON.parse(localStorage.getItem("readStatuses"))
+  statuses[bookID] = bool
+  localStorage.setItem("readStatuses", JSON.stringify(statuses))
+  renderBooks()
+}
+
+function getReadStatus(bookID) {
+  let statuses = JSON.parse(localStorage.getItem("readStatuses"))
+  if (statuses[bookID]) {
+    return statuses[bookID]
+  } else {
+    return false
+  }
+}
+
+renderBooks();
+
+// sandbox

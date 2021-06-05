@@ -29,13 +29,6 @@
           <label for="pages">Number of pages</label>
           <input type="number" id="pages" required> <br>
 
-          <span id="readsection">Have you read this?
-            <label id="readlabel" for="read">
-              <input type="checkbox" id="read">
-            </label>
-            
-          </span>
-
           <button id="submit" type="submit">ADD</button>
         </form>
       </div>
@@ -47,5 +40,28 @@
   <div id="openform-div">
     <button id="openform">Add Book</button>
   </div>
-</body>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDAGcxUYtDl4Kn5c-uQVsYLcSiCXOkDZyU",
+    authDomain: "library-d7be9.firebaseapp.com",
+    projectId: "library-d7be9",
+    storageBucket: "library-d7be9.appspot.com",
+    messagingSenderId: "357237372851",
+    appId: "1:357237372851:web:b9bff8af7c8fc7a9fb7dc6"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+
 <script src="main.js"></script>
+</body>
+
